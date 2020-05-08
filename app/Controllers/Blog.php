@@ -51,7 +51,7 @@ class Blog extends BaseController
       $blogModel->insert($blogInfo);
       return $this->respondCreated($blogInfo);
     } catch (\Exception $e) {
-      return $this->fail($errors, 400);
+      return $this->failServerError($e);
     }
   }
 
@@ -65,7 +65,7 @@ class Blog extends BaseController
         $blogModel->update($blog->id, $blog);
         return $this->respond($blog, 200);
       } catch (\Exception $e) {
-        return $this->fail($e, 500);
+        return $this->failServerError($e);
       }
     }
     return $this->failNotFound();
@@ -79,7 +79,7 @@ class Blog extends BaseController
         $blogModel->delete($id);
         return $this->respondDeleted();
       } catch (\Exception $e) {
-        return $this->fail($e, 500);
+        return $this->failServerError($e);
       }
     }
     return $this->failNotFound();
