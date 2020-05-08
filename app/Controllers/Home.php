@@ -1,6 +1,6 @@
 <?php namespace App\Controllers;
 
-class Api extends BaseController
+class Home extends BaseController
 {
 	public function index()
 	{
