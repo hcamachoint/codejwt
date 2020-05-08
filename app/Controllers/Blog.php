@@ -11,21 +11,32 @@ class Blog extends BaseController
 	{
     $blogModel = new BlogModel();
     $blogs = $blogModel->findAll();
-    return $this->response->setStatusCode(200)->setJSON($blogs);
+    if ($blogs) {
+      return $this->respond($blogs, 200);
+    }
+    return $this->failNotFound();
+
 	}
 
   public function view($id)
 	{
     $blogModel = new BlogModel();
     $blog = $blogModel->find($id);
-    return $this->response->setStatusCode(200)->setJSON($blog);
+    if ($blog) {
+      return $this->respond($blog, 200);
+    }
+    return $this->failNotFound();
+
 	}
 
   public function search($keyword)
 	{
     $blogModel = new BlogModel();
     $blogs = $blogModel->like('title', $keyword, 'both')->findAll();
-    return $this->response->setStatusCode(200)->setJSON($blogs);
+    if ($blogs) {
+      return $this->respond($blogs, 200);
+    }
+    return $this->failNotFound();
 	}
 
   public function create()
@@ -36,22 +47,41 @@ class Blog extends BaseController
       'description' => $blogInfo->description
     ];*/
     $blogModel = new BlogModel();
-    $blogModel->insert($blogInfo);
-    return $this->response->setStatusCode(200);
+    try {
+      $blogModel->insert($blogInfo);
+      return $this->respondCreated($blogInfo);
+    } catch (\Exception $e) {
+      return $this->fail($errors, 400);
+    }
   }
 
   public function update()
   {
     $blog = $this->request->getJSON();
     $blogModel = new BlogModel();
-    $blogModel->update($blog->id, $blog);
-    return $this->response->setStatusCode(200);
+
+    if ($blogModel->find($blog->id)) {
+      try {
+        $blogModel->update($blog->id, $blog);
+        return $this->respond($blog, 200);
+      } catch (\Exception $e) {
+        return $this->fail($e, 500);
+      }
+    }
+    return $this->failNotFound();
   }
 
   public function delete($id)
 	{
     $blogModel = new BlogModel();
-    $blogModel->delete($id);
-    return $this->response->setStatusCode(200)->setJSON($blog);
+    if ($blogModel->find($id)) {
+      try {
+        $blogModel->delete($id);
+        return $this->respondDeleted();
+      } catch (\Exception $e) {
+        return $this->fail($e, 500);
+      }
+    }
+    return $this->failNotFound();
 	}
 }
