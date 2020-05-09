@@ -33,7 +33,9 @@ $routes->setAutoRoute(false);
 
 $routes->group('api', function($routes){
 	$routes->get('/', 'Home::index');
-	$routes->get('test', 'Home::test');
+	$routes->group('auth', function($routes){
+		$routes->get('login', 'Auth::login');
+	}
 	$routes->group('blog', function($routes){
 		$routes->get('/', 'Blog::index');
 		$routes->get('view/(:any)', 'Blog::view/$1');

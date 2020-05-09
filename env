@@ -21,6 +21,7 @@
 #--------------------------------------------------------------------
 
 # app.baseURL = ''
+# app.key = 'my_secret_key'
 # app.forceGlobalSecureRequests = false
 
 # app.sessionDriver = 'CodeIgniter\Session\Handlers\FileHandler'
