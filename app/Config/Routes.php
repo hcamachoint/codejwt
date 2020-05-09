@@ -16,7 +16,7 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php'))
  * --------------------------------------------------------------------
  */
 $routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('Home');
+$routes->setDefaultController('Page');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
@@ -32,10 +32,12 @@ $routes->setAutoRoute(false);
 // route since we don't have to scan directories.
 
 $routes->group('api', function($routes){
-	$routes->get('/', 'Home::index');
+	$routes->get('/', 'Page::index');
+	$routes->get('test', 'Page::test');
+	$routes->get('home', 'Page::home', ['as' => 'page-home', 'filter' => 'auth-user']);
 	$routes->group('auth', function($routes){
-		$routes->get('login', 'Auth::login');
-	}
+		$routes->post('login', 'Auth::login');
+	});
 	$routes->group('blog', function($routes){
 		$routes->get('/', 'Blog::index');
 		$routes->get('view/(:any)', 'Blog::view/$1');

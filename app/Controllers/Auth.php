@@ -2,28 +2,37 @@
 
 use CodeIgniter\API\ResponseTrait;
 use Firebase\JWT\JWT;
+use App\Models\UserModel;
 
-class Home extends BaseController
+class Auth extends BaseController
 {
 	use ResponseTrait;
 
 	public function login()
 	{
-    helper('kit');
-    $key = getenv('app.key');
+		$model = new UserModel();
+		$userLog = $this->request->getJSON();
+		$user = $model->login($userLog->username, $userLog->password);
 
-    //model->auth(username, password): return userData to use on token
+		if ($user[0] === false) {
+			return $this->failNotFound();
+		}else {
+			helper('kit');
+	    $key = getenv('app.key');
+			$token = array(
+					'aud' => aud(),
+					'data' => [
+	        	'id' => $user[1]['id'],
+	        	'username' => $user[1]['username'],
+	          'email' => $user[1]['email']
+	    		]
+			);
+			$jwt = JWT::encode($token, $key);
+			return $this->respond($jwt, 200);
+		}
+
     //with filters check token if valid for routes
-    //https://anexsoft.com/implementacion-de-json-web-token-con-php
-		$token = array(
-				'aud' => aud(),
-				'data' => [
-        	'id' => 1, //model->id
-        	'username' => 'alejandro' //model->username
-          'email' => 'admin@local.dev' //model->email
-    		]
-		);
-		return $this->respond(['data' => 'Main Page JSON'], 200);
+
 	}
 
 	public function test()
