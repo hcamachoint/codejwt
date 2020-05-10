@@ -15,14 +15,12 @@ class User extends BaseController
 
 	public function profile()
 	{
-    $token = getToken($this->request);
-    return $this->respond(dataToken($token), 200);
+    return $this->respond(dataToken($this->request), 200);
   }
 
   public function disconnect()
   {
-    $token = getToken($this->request);
-    $data = dataToken($token);
+    $data = dataToken($this->request);
     $model = new UserModel();
 
     if ($model->find($data->id)) {
@@ -38,8 +36,7 @@ class User extends BaseController
 
   public function update()
   {
-    $token = getToken($this->request);
-    $data = dataToken($token);
+    $data = dataToken($this->request);
 
     $userInfoJson = $this->request->getJSON();
     $userInfoFixed = [
@@ -71,8 +68,7 @@ class User extends BaseController
 
   public function password()
   {
-    $token = getToken($this->request);
-    $data = dataToken($token);
+    $data = dataToken($this->request);
 
     $userInfoJson = $this->request->getJSON();
     $validation =  \Config\Services::validation();
@@ -91,7 +87,7 @@ class User extends BaseController
     if ($model->find($data->id)) {
       try {
         $model->update($data->id, $newpass);
-        return $this->respond($newpass, 200);
+        return $this->respond(['message' => 'Ok'], 200);
       } catch (\Exception $e) {
         return $this->failServerError($e);
       }

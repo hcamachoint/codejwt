@@ -18,8 +18,13 @@ function aud(){
     return sha1($aud);
 }
 
-function dataToken($token){
-  return JWT::decode($token,getenv('app.key'), ['HS256'])->data;
+function dataToken($request){
+  if (empty($request->getHeader('Authorization'))) {
+    return Services::response()->setStatusCode(401, 'Unauthorized');
+  }else {
+    $token = $request->getHeader('Authorization')->getValue();
+    return JWT::decode($token,getenv('app.key'), ['HS256'])->data;
+  }
 
 }
 
