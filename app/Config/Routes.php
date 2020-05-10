@@ -33,11 +33,19 @@ $routes->setAutoRoute(false);
 
 $routes->group('api', function($routes){
 	$routes->get('/', 'Page::index');
-	$routes->get('test', 'Page::test');
-	$routes->get('home', 'Page::home', ['as' => 'page-home', 'filter' => 'auth-user']);
-	$routes->group('auth', function($routes){
+
+	$routes->group('auth', ['filter' => 'guest-user'], function($routes){
 		$routes->post('login', 'Auth::login');
+		$routes->post('register', 'Auth::register');
 	});
+
+	$routes->group('user', ['filter' => 'auth-user'], function($routes){
+		$routes->get('profile', 'User::profile');
+		$routes->delete('disconnect', 'User::disconnect');
+		$routes->put('update', 'User::update');
+		$routes->put('password', 'User::password');
+	});
+
 	$routes->group('blog', function($routes){
 		$routes->get('/', 'Blog::index');
 		$routes->get('view/(:any)', 'Blog::view/$1');

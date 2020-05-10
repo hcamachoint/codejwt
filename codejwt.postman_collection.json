@@ -1,0 +1,377 @@
+{
+	"info": {
+		"_postman_id": "fc826f02-c800-46a6-872e-c6adf21c1d4a",
+		"name": "Codejwt",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://codejwt.test/api/",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"hcamacho\",\n    \"password\": \"asd123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://codejwt.test/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\": \"Hugo\",\n    \"lastname\": \"Camacho\",\n    \"username\": \"hcamacho\",\n    \"email\": \"hcamacho.int@gmail.com\",\n    \"password\": \"asd123\",\n    \"password_confirm\": \"asd123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://codejwt.test/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Profile",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNTFhYWE0MmJmNmIxMWZhMzc2MTRiMzlmYTYwMDk3MjViYzQ0Njk0IiwiaWF0IjoxNTg5MDc2NzU4LCJleHAiOjE1ODkxNjMxNTgsImRhdGEiOnsiaWQiOiI3IiwidXNlcm5hbWUiOiJoY2FtYWNobyIsImVtYWlsIjoiaGNhbWFjaG8uaW50QGdtYWlsLmNvbSJ9fQ.X0kdxNRM09tedVeMb8XoukPMdps5LJjxnBn-1SSvplw",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://codejwt.test/api/user/profile",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"user",
+						"profile"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNTFhYWE0MmJmNmIxMWZhMzc2MTRiMzlmYTYwMDk3MjViYzQ0Njk0IiwiaWF0IjoxNTg5MDgxNTAyLCJleHAiOjE1ODkxNjc5MDIsImRhdGEiOnsiaWQiOiI4IiwidXNlcm5hbWUiOiJoY2FtYWNobyIsImVtYWlsIjoiaGNhbWFjaG8uaW50QGdtYWlsLmNvbSJ9fQ.oPDHLrIOv_gLWpgB-fUxteVhrp-9jKvUXzMiGf4DvhY",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\": \"Alejandro\",\n    \"lastname\": \"Escobar\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://codejwt.test/api/user/update",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"user",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNTFhYWE0MmJmNmIxMWZhMzc2MTRiMzlmYTYwMDk3MjViYzQ0Njk0IiwiaWF0IjoxNTg5MDc5MTgzLCJleHAiOjE1ODkxNjU1ODMsImRhdGEiOnsiaWQiOiI4IiwidXNlcm5hbWUiOiJoY2FtYWNobyIsImVtYWlsIjoiaGNhbWFjaG8uaW50QGdtYWlsLmNvbSJ9fQ.1G18MPJU2WAgaVKZUTZanRbAglGwTt31hFQWi401xH8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://codejwt.test/api/user/disconnect",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"user",
+						"disconnect"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Password",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNTFhYWE0MmJmNmIxMWZhMzc2MTRiMzlmYTYwMDk3MjViYzQ0Njk0IiwiaWF0IjoxNTg5MDgxNTAyLCJleHAiOjE1ODkxNjc5MDIsImRhdGEiOnsiaWQiOiI4IiwidXNlcm5hbWUiOiJoY2FtYWNobyIsImVtYWlsIjoiaGNhbWFjaG8uaW50QGdtYWlsLmNvbSJ9fQ.oPDHLrIOv_gLWpgB-fUxteVhrp-9jKvUXzMiGf4DvhY"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"password\": \"asd123\",\n    \"password_confirm\": \"asd123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://codejwt.test/api/user/password",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"user",
+						"password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Blog Index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://codejwt.test/api/blog/",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"blog",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Blog View",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://codejwt.test/api/blog/view/1",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"blog",
+						"view",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Blog Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://codejwt.test/api/blog/search/mar",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"blog",
+						"search",
+						"mar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Blog Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Cielo\",\n    \"description\": \"Hola cielo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://codejwt.test/api/blog/create",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"blog",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Blog Update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": \"6\",\n    \"title\": \"Cielo\",\n    \"description\": \"Hola cielo nuevo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://codejwt.test/api/blog/update",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"blog",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Blog Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://codejwt.test/api/blog/delete/2",
+					"protocol": "http",
+					"host": [
+						"codejwt",
+						"test"
+					],
+					"path": [
+						"api",
+						"blog",
+						"delete",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

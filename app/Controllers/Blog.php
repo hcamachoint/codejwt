@@ -42,10 +42,6 @@ class Blog extends BaseController
   public function create()
   {
     $blogInfo = $this->request->getJSON();
-    /*$blog = [ //FOR CUSTOM, INSERT THIS $BLOG
-      'title' => $blogInfo->title,
-      'description' => $blogInfo->description
-    ];*/
     $blogModel = new BlogModel();
     try {
       $blogModel->insert($blogInfo);
