@@ -22,6 +22,14 @@ class AuthFilter implements FilterInterface
       if ($res[0] == 400 || $res[0] == 401) {
         return Services::response()->setStatusCode($res[0], $res[1]);
       }
+
+      $cache = \Config\Services::cache();
+      if (!empty($cache->get('auth_token'))) {
+        $almacen = $cache->get('auth_token');
+        if (in_array($token, $almacen)) {
+          return Services::response()->setStatusCode(401, 'Unauthorized');
+        }
+      }
     }
 
     //--------------------------------------------------------------------

@@ -54,7 +54,8 @@
 # database.default.database = ci4
 # database.default.username = root
 # database.default.password = root
-# database.default.DBDriver = MySQLi
+# database.default.port = 5432
+# database.default.DBDriver = Postgre
 
 # database.tests.hostname = localhost
 # database.tests.database = ci4

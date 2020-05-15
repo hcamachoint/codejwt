@@ -44,9 +44,16 @@ class Users extends Migration
                     'type'           => 'TINYINT',
                     'constraint'     => '1',
             ],
-						'created_at datetime default current_timestamp',
-						'updated_at datetime default current_timestamp on update current_timestamp',
-						'deleted_at datetime default null',
+						'created_at'       => [
+                    'type'           => 'datetime',
+            ],
+						'updated_at'       => [
+                    'type'           => 'datetime',
+            ],
+						'deleted_at'       => [
+                    'type'           => 'datetime',
+										'null'					 =>	TRUE,
+            ],
     ]);
     $this->forge->addKey('id', TRUE);
     $this->forge->createTable('users');

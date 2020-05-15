@@ -34,9 +34,10 @@ $routes->setAutoRoute(false);
 $routes->group('api', function($routes){
 	$routes->get('/', 'Page::index');
 
-	$routes->group('auth', ['filter' => 'guest-user'], function($routes){
-		$routes->post('login', 'Auth::login');
-		$routes->post('register', 'Auth::register');
+	$routes->group('auth', function($routes){
+		$routes->post('login', 'Auth::login', ['filter' => 'guest-user']);
+		$routes->get('logout', 'Auth::logout', ['filter' => 'auth-user']);
+		$routes->post('register', 'Auth::register', ['filter' => 'guest-user']);
 	});
 
 	$routes->group('user', ['filter' => 'auth-user'], function($routes){

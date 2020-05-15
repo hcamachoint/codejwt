@@ -32,8 +32,7 @@ class Auth extends BaseController
 	    $key = getenv('app.key');
 			$token = array(
 					'aud' => aud(),
-					'iat' => time(),
-					'exp' => time() + (86400),
+					'exp' => time() + (60*30),
 					'data' => [
 	        	'id' => $user[1]['id'],
 	        	'username' => $user[1]['username'],
@@ -42,6 +41,21 @@ class Auth extends BaseController
 			);
 			$jwt = JWT::encode($token, $key);
 			return $this->respond($jwt, 200);
+		}
+	}
+
+	public function logout()
+	{
+		helper('token');
+	  $cache = \Config\Services::cache();
+		$token = getToken($this->request);
+		if (!empty($cache->get('auth_token'))) {
+			$almacen = $cache->get('auth_token');
+		  $almacen[] = $token;
+			cache()->save('auth_token', $almacen, 60*30);
+		}else {
+			$almacen[] = $token;
+		  cache()->save('auth_token', $almacen, 60*30);
 		}
 	}
 
