@@ -11,25 +11,25 @@ class AuthFilter implements FilterInterface
 {
     public function before(RequestInterface $request)
     {
-      if (empty($request->getHeader('Authorization'))) {
-        return Services::response()->setStatusCode(400, 'Token required');
+      helper('jwt');
+      if (!$request->hasHeader('Authorization')){
+          return Services::response()->setStatusCode(401, 'Unauthorized');
+      }else {
+          $token = $request->getHeader('Authorization')->getValue();
+          $check = checkToken($token);
+          if ($check[0] == 400 || $check[0] == 401) {
+            return Services::response()->setStatusCode($check[0], $check[1]);
+          }
       }
 
-      helper('token');
-      $token = $request->getHeader('Authorization')->getValue();
-      $res = checkToken($token);
 
-      if ($res[0] == 400 || $res[0] == 401) {
-        return Services::response()->setStatusCode($res[0], $res[1]);
-      }
-
-      $cache = \Config\Services::cache();
+      /*$cache = \Config\Services::cache();
       if (!empty($cache->get('auth_token'))) {
         $almacen = $cache->get('auth_token');
         if (in_array($token, $almacen)) {
           return Services::response()->setStatusCode(401, 'Unauthorized');
         }
-      }
+      }*/
     }
 
     //--------------------------------------------------------------------

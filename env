@@ -21,8 +21,12 @@
 #--------------------------------------------------------------------
 
 # app.baseURL = ''
-# app.key = 'my_secret_key'
 # app.forceGlobalSecureRequests = false
+
+# app.token_key = 'my_secret_key'
+# app.token_auth_expiry = 600
+# app.token_refresh_expiry = 900
+# app.token_blacklist = false
 
 # app.sessionDriver = 'CodeIgniter\Session\Handlers\FileHandler'
 # app.sessionCookieName = 'ci_session'

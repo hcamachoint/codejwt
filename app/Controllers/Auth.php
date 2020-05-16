@@ -10,6 +10,12 @@ class Auth extends BaseController
 {
 	use ResponseTrait;
 
+	public function __construct()
+  {
+     helper('jwt');
+		 helper('cookie');
+  }
+
 	public function login()
 	{
 		$model = new UserModel();
@@ -30,10 +36,7 @@ class Auth extends BaseController
 		if ($user[0] === false) {
 			return $this->fail($user[1], 400);
 		}else {
-			helper('token');
-			helper('cookie');
-
-	    $key = getenv('app.key');
+	    $key = getenv('app.token_key');
 			$token = array(
 					'aud' => aud(),
 					'exp' => time() + (600),
@@ -61,9 +64,6 @@ class Auth extends BaseController
 
 	public function refresh()
 	{
-		helper('cookie');
-		helper('token');
-
 		$origin_token_auth = getToken($this->request);
 		$origin_token_refresh = $this->request->getCookie('refresh_token');
 		$origin_token_info = checkToken($origin_token_refresh);
@@ -80,7 +80,7 @@ class Auth extends BaseController
 			}
 
 			$data = (array)dataToken($this->request);
-			$key = getenv('app.key');
+			$key = getenv('app.token_key');
 			$token = array(
 					'aud' => aud(),
 					'exp' => time() + (600),
@@ -131,9 +131,6 @@ class Auth extends BaseController
 
 	public function logout()
 	{
-		helper('token');
-		helper('cookie');
-
 	  $cache = \Config\Services::cache();
 		$token = getToken($this->request);
 		$refresh_token = $this->request->getCookie('refresh_token');

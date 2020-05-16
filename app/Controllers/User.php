@@ -10,12 +10,13 @@ class User extends BaseController
 
   public function __construct()
   {
-     helper('token');
+     helper('jwt');
   }
 
 	public function profile()
 	{
-    return $this->respond(dataToken($this->request), 200);
+		//dataToken($this->request)
+    return $this->respond("user", 200);
   }
 
   public function disconnect()
