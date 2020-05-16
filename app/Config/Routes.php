@@ -35,9 +35,10 @@ $routes->group('api', function($routes){
 	$routes->get('/', 'Page::index');
 
 	$routes->group('auth', function($routes){
+		$routes->post('register', 'Auth::register', ['filter' => 'guest-user']);
 		$routes->post('login', 'Auth::login', ['filter' => 'guest-user']);
 		$routes->get('logout', 'Auth::logout', ['filter' => 'auth-user']);
-		$routes->post('register', 'Auth::register', ['filter' => 'guest-user']);
+		$routes->get('refresh', 'Auth::refresh', ['filter' => 'auth-user']);
 	});
 
 	$routes->group('user', ['filter' => 'auth-user'], function($routes){
