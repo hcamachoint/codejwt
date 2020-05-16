@@ -18,36 +18,6 @@ function aud(){
     return sha1($aud);
 }
 
-function dataToken($request){
-  if (empty($request->getHeader('Authorization'))) {
-    return Services::response()->setStatusCode(401, 'Unauthorized');
-  }else {
-    $token = $request->getHeader('Authorization')->getValue();
-    return JWT::decode($token,getenv('app.token_key'), ['HS256'])->data;
-  }
-
+function dataToken($token){
+  return JWT::decode($token, getenv('jwt.token_key'), ['HS256'])->data;
 }
-
-function checkToken($token){
-  try {
-    $decoded = JWT::decode($token, getenv('app.token_key'), ['HS256']);
-  } catch (\Exception $e) {
-    return array(400, $e->getMessage());
-  }
-
-  if($decoded->aud !== aud())return array(401, 'Unauthorized!');
-  return true;
-}
-
-/*function getToken($request){
-  if (!$request->hasHeader('Authorization')){
-      print_r("true");
-      return Services::response()->setStatusCode(401, 'Unauthorized');
-  }
-  print_r("false");
-  return $request->getHeader('Authorization')->getValue();
-
-  if (checkToken($token)) {
-    return $token;
-  }
-}*/

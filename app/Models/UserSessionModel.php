@@ -2,9 +2,9 @@
 
 use CodeIgniter\Model;
 
-class UserJwtModel extends Model
+class UserSessionModel extends Model
 {
-    protected $table = 'users_jwt';
+    protected $table = 'users_session';
     protected $primaryKey = 'id';
     protected $allowedFields = ['token', 'user'];
     protected $useTimestamps = true;

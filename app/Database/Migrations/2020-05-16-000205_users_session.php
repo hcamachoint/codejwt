@@ -2,7 +2,7 @@
 
 use CodeIgniter\Database\Migration;
 
-class UserJwt extends Migration
+class UserSession extends Migration
 {
 	public function up()
 	{
@@ -32,12 +32,12 @@ class UserJwt extends Migration
     ]);
     $this->forge->addKey('id', TRUE);
 		$this->forge->addForeignKey('user','users','id','CASCADE','CASCADE');
-    $this->forge->createTable('users_jwt');
+    $this->forge->createTable('users_session');
 		$this->db->enableForeignKeyChecks();
 	}
 
 	public function down()
 	{
-		$this->forge->dropTable('users_jwt');
+		$this->forge->dropTable('users_session');
 	}
 }

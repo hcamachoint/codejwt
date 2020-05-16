@@ -11,12 +11,10 @@ class GuestFilter implements FilterInterface
 {
     public function before(RequestInterface $request)
     {
-      if (!empty($request->getHeader('Authorization'))) {
+      if ($request->hasHeader('Authorization')) {
         return Services::response()->setStatusCode(403, "Forbidden");
       }
     }
-
-    //--------------------------------------------------------------------
 
     public function after(RequestInterface $request, ResponseInterface $response)
     {

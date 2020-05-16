@@ -3,10 +3,10 @@
 use CodeIgniter\API\ResponseTrait;
 use Firebase\JWT\JWT;
 use App\Models\UserModel;
-use App\Models\UserJwtModel;
+use App\Models\UserSessionModel;
 use Config\Services;
 
-class Auth extends BaseController
+class Api extends BaseController
 {
 	use ResponseTrait;
 
@@ -36,10 +36,9 @@ class Auth extends BaseController
 		if ($user[0] === false) {
 			return $this->fail($user[1], 400);
 		}else {
-	    $key = getenv('app.token_key');
 			$token = array(
 					'aud' => aud(),
-					'exp' => time() + (600),
+					'exp' => time() + ((int)getenv('jwt.token_auth_expiry')),
 					'data' => [
 	        	'id' => $user[1]['id'],
 	        	'username' => $user[1]['username'],
@@ -48,95 +47,95 @@ class Auth extends BaseController
 			);
 			$refresh = array(
 					'aud' => aud(),
-					'exp' => time() + (900),
+					'exp' => time() + ((int)getenv('jwt.token_refresh_expiry')),
 			);
 
-			$jwt = JWT::encode($token, $key);
-			$jwt_refresh = JWT::encode($refresh, $key);
+			$jwt = JWT::encode($token, getenv('jwt.token_key'));
+			$jwt_refresh = JWT::encode($refresh, getenv('jwt.token_key'));
 
-			$jwt_storage = new UserJwtModel();
+			$jwt_storage = new UserSessionModel();
 			$jwt_storage->insert(['token' => $jwt_refresh, 'user' => $user[1]['id']]);
 
-			//set_cookie(['name' => 'refresh_token', 'value' => $jwt_refresh, 'httponly' => TRUE]);
 			return $this->respond(['token' => $jwt, 'refresh_token' => $jwt_refresh], 200);
 		}
 	}
 
 	public function refresh()
 	{
-		$origin_token_auth = getToken($this->request);
+		$origin_token_auth = $this->request->getHeader('Authorization')->getValue();
 		$origin_token_refresh = $this->request->getCookie('refresh_token');
-		$origin_token_info = checkToken($origin_token_refresh);
 
-		if ($origin_token_info[0] == 400 || $origin_token_info[0] == 401) {
-			return Services::response()->setStatusCode($origin_token_info[0], $origin_token_info[1]);
-		}else {
+		if (getenv('jwt.token_blacklist') == 'true') {
 			$cache = \Config\Services::cache();
 			if (!empty($cache->get('refresh_token'))) {
 				$almacen2 = $cache->get('refresh_token');
 				if (in_array($origin_token_refresh, $almacen2)) {
-					return Services::response()->setStatusCode(401, 'Unauthorized');
+					return $this->fail('Unauthorized', 401);
 				}
 			}
+		}
 
-			$data = (array)dataToken($this->request);
-			$key = getenv('app.token_key');
-			$token = array(
-					'aud' => aud(),
-					'exp' => time() + (600),
-					'data' => [
-	        	'id' => $data['id'],
-	        	'username' => $data['username'],
-	          'email' => $data['email']
-	    		]
-			);
-			$refresh = array(
-					'aud' => aud(),
-					'exp' => time() + (900),
-			);
+		$data = (array)dataToken($origin_token_auth);
+		$token = array(
+				'aud' => aud(),
+				'exp' => time() + ((int)getenv('jwt.token_auth_expiry')),
+				'data' => [
+        	'id' => $data['id'],
+        	'username' => $data['username'],
+          'email' => $data['email']
+    		]
+		);
+		$refresh = array(
+				'aud' => aud(),
+				'exp' => time() + ((int)getenv('jwt.token_refresh_expiry')),
+		);
 
-			$jwt = JWT::encode($token, $key);
-			$jwt_refresh = JWT::encode($refresh, $key);
+		$jwt = JWT::encode($token, getenv('jwt.token_key'));
+		$jwt_refresh = JWT::encode($refresh, getenv('jwt.token_key'));
 
-			try {
-				$jwt_storage = new UserJwtModel();
-				$jwt_storage->where('token', $origin_token_refresh)->set(['token' => $jwt_refresh])->update();
-			} catch (\Exception $e) {
-				print_r($e->getMessage());
-			}
+		try {
+			$jwt_storage = new UserSessionModel();
+			$jwt_storage->where('token', $origin_token_refresh)->set(['token' => $jwt_refresh])->update();
+		} catch (\Exception $e) {
+			print_r($e->getMessage());
+		}
 
-			//IVALIDATE TOKENS
+		//IVALIDATE TOKENS
+		if (getenv('jwt.token_blacklist') == 'true') {
 			if (!empty($cache->get('auth_token'))) {
 				$almacen = $cache->get('auth_token');
 			  $almacen[] = $origin_token_auth;
-				cache()->save('auth_token', $almacen, 600);
+				cache()->save('auth_token', $almacen, getenv('jwt.token_auth_expiry'));
 			}else {
 				$almacen[] = $origin_token_auth;
-			  cache()->save('auth_token', $almacen, 600);
+			  cache()->save('auth_token', $almacen, getenv('jwt.token_auth_expiry'));
 			}
 			if (!empty($cache->get('refresh_token'))) {
 				$almacen2 = $cache->get('refresh_token');
 				$almacen2[] = $origin_token_refresh;
-				cache()->save('refresh_token', $almacen2, 900);
+				cache()->save('refresh_token', $almacen2, getenv('jwt.token_refresh_expiry'));
 			}else {
 				$almacen2[] = $origin_token_refresh;
-			  cache()->save('refresh_token', $almacen2, 900);
+			  cache()->save('refresh_token', $almacen2, getenv('jwt.token_refresh_expiry'));
 			}
-
-			//set_cookie(['name' => 'refresh_token', 'value' => $jwt_refresh, 'httponly' => TRUE]);
-			return $this->respond(['token' => $jwt, 'refresh_token' => $jwt_refresh], 200);
 		}
+
+		//set_cookie(['name' => 'refresh_token', 'value' => $jwt_refresh, 'httponly' => TRUE]);
+		return $this->respond(['token' => $jwt, 'refresh_token' => $jwt_refresh], 200);
 
 	}
 
 	public function logout()
 	{
 	  $cache = \Config\Services::cache();
-		$token = getToken($this->request);
+		$token = $this->request->getHeader('Authorization')->getValue();
 		$refresh_token = $this->request->getCookie('refresh_token');
 
+		//DELETE FROM COOKIE
+		delete_cookie('refresh_token');
+
 		//DELETE FROM DATABASE
-		$jwt_storage = new UserJwtModel();
+		$jwt_storage = new UserSessionModel();
 		if ($jwt_storage->where('token', $refresh_token)) {
       try {
         $jwt_storage->where('token', $refresh_token)->delete();
@@ -146,26 +145,25 @@ class Auth extends BaseController
     }
 
 		//ADD TO BLACKLIST
-		if (!empty($cache->get('auth_token'))) {
-			$almacen = $cache->get('auth_token');
-		  $almacen[] = $token;
-			cache()->save('auth_token', $almacen, 600);
-		}else {
-			$almacen[] = $token;
-		  cache()->save('auth_token', $almacen, 600);
-		}
+		if (getenv('jwt.token_blacklist') == 'true') {
+			if (!empty($cache->get('auth_token'))) {
+				$almacen = $cache->get('auth_token');
+			  $almacen[] = $token;
+				cache()->save('auth_token', $almacen, (int)getenv('jwt.token_auth_expiry'));
+			}else {
+				$almacen[] = $token;
+			  cache()->save('auth_token', $almacen, (int)getenv('jwt.token_auth_expiry'));
+			}
 
-		if (!empty($cache->get('refresh_token'))) {
-			$almacen2 = $cache->get('refresh_token');
-			$almacen2[] = $refresh_token;
-			cache()->save('refresh_token', $almacen2, 900);
-		}else {
-			$almacen2[] = $refresh_token;
-		  cache()->save('refresh_token', $almacen2, 900);
+			if (!empty($cache->get('refresh_token'))) {
+				$almacen2 = $cache->get('refresh_token');
+				$almacen2[] = $refresh_token;
+				cache()->save('refresh_token', $almacen2, (int)getenv('jwt.token_refresh_expiry'));
+			}else {
+				$almacen2[] = $refresh_token;
+			  cache()->save('refresh_token', $almacen2, (int)getenv('jwt.token_refresh_expiry'));
+			}
 		}
-
-		//DELETE FROM COOKIE
-		delete_cookie('refresh_token');
 	}
 
 	public function register()

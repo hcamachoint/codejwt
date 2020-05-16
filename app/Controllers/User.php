@@ -15,8 +15,8 @@ class User extends BaseController
 
 	public function profile()
 	{
-		//dataToken($this->request)
-    return $this->respond("user", 200);
+		$token = $this->request->getHeader('Authorization')->getValue();
+    return $this->respond(dataToken($token), 200);
   }
 
   public function disconnect()

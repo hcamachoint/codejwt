@@ -29,8 +29,7 @@ class UserModel extends Model
             $userdata = [
                     'id'  => $query['id'],
                     'username'  => $query['username'],
-                    'email'  => $query['email'],
-                    'logged_in' => TRUE
+                    'email'  => $query['email']
             ];
             return array(true, $userdata);
           }

@@ -9,6 +9,8 @@ use Config\Services;
 
 class AuthFilter implements FilterInterface
 {
+    use ResponseTrait;
+
     public function before(RequestInterface $request)
     {
       helper('jwt');
@@ -16,20 +18,23 @@ class AuthFilter implements FilterInterface
           return Services::response()->setStatusCode(401, 'Unauthorized');
       }else {
           $token = $request->getHeader('Authorization')->getValue();
-          $check = checkToken($token);
-          if ($check[0] == 400 || $check[0] == 401) {
-            return Services::response()->setStatusCode($check[0], $check[1]);
+          try {
+            $decoded = JWT::decode($token, getenv('jwt.token_key'), ['HS256']);
+          } catch (\Exception $e) {
+            return Services::response()->setStatusCode(400, $e->getMessage());
           }
+          if($decoded->aud !== aud())Services::response()->setStatusCode(401, 'Unauthorized!');
       }
 
-
-      /*$cache = \Config\Services::cache();
-      if (!empty($cache->get('auth_token'))) {
-        $almacen = $cache->get('auth_token');
-        if (in_array($token, $almacen)) {
-          return Services::response()->setStatusCode(401, 'Unauthorized');
+      if (getenv('jwt.token_blacklist') == 'true') {
+        $cache = \Config\Services::cache();
+        if (!empty($cache->get('auth_token'))) {
+          $almacen = $cache->get('auth_token');
+          if (in_array($token, $almacen)) {
+            return Services::response()->setStatusCode(401, 'Unauthorized');
+          }
         }
-      }*/
+      }
     }
 
     //--------------------------------------------------------------------
