@@ -21,7 +21,7 @@ class User extends BaseController
 
   public function disconnect()
   {
-    $data = dataToken($this->request);
+    $data = dataToken($this->request->getHeader('Authorization')->getValue());
     $model = new UserModel();
 
     if ($model->find($data->id)) {
@@ -37,7 +37,7 @@ class User extends BaseController
 
   public function update()
   {
-    $data = dataToken($this->request);
+    $data = dataToken($this->request->getHeader('Authorization')->getValue());
 
     $userInfoJson = $this->request->getJSON();
     $userInfoFixed = [
@@ -69,7 +69,7 @@ class User extends BaseController
 
   public function password()
   {
-    $data = dataToken($this->request);
+    $data = dataToken($this->request->getHeader('Authorization')->getValue());
 
     $userInfoJson = $this->request->getJSON();
     $validation =  \Config\Services::validation();
